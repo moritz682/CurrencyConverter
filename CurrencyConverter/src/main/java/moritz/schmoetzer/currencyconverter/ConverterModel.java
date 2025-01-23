@@ -14,9 +14,9 @@ import org.json.JSONObject;
  *
  * @author Moritz Schmötzer
  */
-public class Converter {
+public class ConverterModel {
 
-    public Converter() {
+    public ConverterModel() {
 
     }
 

@@ -1,5 +1,7 @@
 package moritz.schmoetzer.currencyconverter;
 
+import javax.swing.JFrame;
+
 /**
  *
  * @author Moritz Schmötzer
@@ -7,7 +9,6 @@ package moritz.schmoetzer.currencyconverter;
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println(Converter.getLatestExchangeRate("EUR", "USD"));
-        System.out.println(Converter.convertCurrencies("EUR", "USD", 100));
+        JFrame view = new ConverterView();
     }
 }
