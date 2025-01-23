@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package moritz.schmoetzer.currencyconverter;
 
 import java.io.BufferedReader;
@@ -10,10 +14,10 @@ import org.json.JSONObject;
  *
  * @author Moritz Schmötzer
  */
-public class CurrencyConverter {
+public class Converter {
 
-    public static void main(String[] args) {
-        System.out.println(getLatestExchangeRate("EUR", "USD"));
+    public Converter() {
+
     }
 
     /**
@@ -22,7 +26,7 @@ public class CurrencyConverter {
      * @param request Defines the API-Call
      * @return The response as a JSONObject
      */
-    public static JSONObject requestAPI(String request) {
+    private static JSONObject requestAPI(String request) {
         // API-Docs --> https://frankfurter.dev/?ref=public_apis&utm_medium=website
         try {
             // Requesting the exchange rate with the desired parameters
@@ -48,14 +52,29 @@ public class CurrencyConverter {
      * Returns the latest exchange rate between a base and a target currency
      * e.g. EUR/USD.
      *
-     * @param currency1 Defines the base-currency
-     * @param currency2 Defines the target-currency
+     * @param baseCurrency Defines the base-currency
+     * @param targetCurrency Defines the target-currency
      * @return The latest exchange rate between the base and target currency
      */
-    public static double getLatestExchangeRate(String currency1, String currency2) {
+    public static double getLatestExchangeRate(String baseCurrency, String targetCurrency) {
         // Requesting the latest exchange rate between to currencies
-        JSONObject response = requestAPI(String.format("latest?base=%s&symbols=%s", currency1, currency2));
+        JSONObject response = requestAPI(String.format("latest?base=%s&symbols=%s", baseCurrency, targetCurrency));
 
-        return response.getJSONObject("rates").getDouble(currency2);
+        return response.getJSONObject("rates").getDouble(targetCurrency);
+    }
+
+    /**
+     * Converts the amount from the base-currency to the amount of the
+     * target-currency.
+     *
+     * @param baseCurrency Defines the base-currency
+     * @param targetCurrency Defines the target-currency
+     * @param amount Desired amount to be converted
+     * @return The amount in the target currency
+     */
+    public static double convertCurrencies(String baseCurrency, String targetCurrency, double amount) {
+        double exchangeRate = getLatestExchangeRate(baseCurrency, targetCurrency);
+
+        return amount * exchangeRate;
     }
 }
