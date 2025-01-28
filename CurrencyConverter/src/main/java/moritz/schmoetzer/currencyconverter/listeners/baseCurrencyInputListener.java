@@ -14,16 +14,16 @@ import moritz.schmoetzer.currencyconverter.ConverterModel;
  *
  * @author Moritz Schmötzer
  */
-public class baseCurrencyInputListener implements KeyListener {
+public class BaseCurrencyInputListener implements KeyListener {
 
-    String baseCurrency;
-    String targetCurrency;
+    JLabel baseCurrency;
+    JLabel targetCurrency;
     JTextField baseCurrencyInput;
     JTextField targetCurrencyOutput;
 
-    public baseCurrencyInputListener(JLabel baseCurrency, JLabel targetCurrency, JTextField baseCurrencyInput, JTextField targetCurrencyOutput) {
-        this.baseCurrency = baseCurrency.getText();
-        this.targetCurrency = targetCurrency.getText();
+    public BaseCurrencyInputListener(JLabel baseCurrency, JLabel targetCurrency, JTextField baseCurrencyInput, JTextField targetCurrencyOutput) {
+        this.baseCurrency = baseCurrency;
+        this.targetCurrency = targetCurrency;
         this.baseCurrencyInput = baseCurrencyInput;
         this.targetCurrencyOutput = targetCurrencyOutput;
     }
@@ -39,7 +39,7 @@ public class baseCurrencyInputListener implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         try {
-            double targetAmount = ConverterModel.convertCurrencies(baseCurrency, targetCurrency, Double.parseDouble(baseCurrencyInput.getText())); // Converts the currencies
+            double targetAmount = ConverterModel.convertCurrencies(baseCurrency.getText(), targetCurrency.getText(), Double.parseDouble(baseCurrencyInput.getText())); // Converts the currencies
             if (baseCurrencyInput.getText().startsWith("0")) {
                 baseCurrencyInput.setText(baseCurrencyInput.getText().replaceFirst("0", "")); // Removes the leading 0 of the entered amount
             }

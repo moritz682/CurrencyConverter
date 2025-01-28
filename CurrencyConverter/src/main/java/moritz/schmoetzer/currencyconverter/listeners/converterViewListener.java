@@ -13,22 +13,22 @@ import moritz.schmoetzer.currencyconverter.ConverterModel;
  *
  * @author Moritz Schmötzer
  */
-public class converterViewListener implements WindowListener {
+public class ConverterViewListener implements WindowListener {
 
-    String baseCurrency;
-    String targetCurrency;
+    JLabel baseCurrency;
+    JLabel targetCurrency;
     JLabel exchangeRateLabel;
 
-    public converterViewListener(JLabel baseCurrency, JLabel targetCurrency, JLabel exchangeRate) {
-        this.baseCurrency = baseCurrency.getText();
-        this.targetCurrency = targetCurrency.getText();
+    public ConverterViewListener(JLabel baseCurrency, JLabel targetCurrency, JLabel exchangeRate) {
+        this.baseCurrency = baseCurrency;
+        this.targetCurrency = targetCurrency;
         this.exchangeRateLabel = exchangeRate;
     }
 
     @Override
     public void windowOpened(WindowEvent e) {
-        Double exchangeRate = ConverterModel.getLatestExchangeRate(baseCurrency, targetCurrency);
-        exchangeRateLabel.setText("1 " + baseCurrency + " = " + exchangeRate + " " + targetCurrency);
+        Double exchangeRate = ConverterModel.getLatestExchangeRate(baseCurrency.getText(), targetCurrency.getText());
+        exchangeRateLabel.setText("1 " + baseCurrency.getText() + " = " + exchangeRate + " " + targetCurrency.getText()); // Replaces the placeholder with the current exchange rate
     }
 
     @Override
