@@ -14,14 +14,14 @@ import moritz.schmoetzer.currencyconverter.ConverterModel;
  *
  * @author Moritz Schmötzer
  */
-public class baseCurrencyListener implements KeyListener {
+public class baseCurrencyInputListener implements KeyListener {
 
     String baseCurrency;
     String targetCurrency;
     JTextField baseCurrencyInput;
     JTextField targetCurrencyOutput;
 
-    public baseCurrencyListener(JLabel baseCurrency, JLabel targetCurrency, JTextField baseCurrencyInput, JTextField targetCurrencyOutput) {
+    public baseCurrencyInputListener(JLabel baseCurrency, JLabel targetCurrency, JTextField baseCurrencyInput, JTextField targetCurrencyOutput) {
         this.baseCurrency = baseCurrency.getText();
         this.targetCurrency = targetCurrency.getText();
         this.baseCurrencyInput = baseCurrencyInput;
