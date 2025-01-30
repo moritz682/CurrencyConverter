@@ -4,18 +4,22 @@
  */
 package moritz.schmoetzer.currencyconverter;
 
+import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import moritz.schmoetzer.currencyconverter.listeners.BaseCurrencyInputListener;
-import moritz.schmoetzer.currencyconverter.listeners.ConverterViewListener;
+import moritz.schmoetzer.currencyconverter.listeners.GlobalMouseListener;
 import moritz.schmoetzer.currencyconverter.listeners.SwitchCurrencyButtonListener;
+import moritz.schmoetzer.currencyconverter.renderers.CurrencyRenderer;
 
 /**
  *
@@ -43,7 +47,8 @@ public class ConverterView extends JFrame {
         this.setLayout(layout);
 
         // Elements
-        JLabel baseCurrency = new JLabel("EUR"); // Label for the base currency
+        JComboBox baseCurrency = new JComboBox(ConverterModel.loadCurrencies()); // ComboBox for the base currency
+        baseCurrency.setRenderer(new CurrencyRenderer()); // Alters the appereance of the ComboBox
         addObject(baseCurrency, this.getContentPane(), layout, gbc, 0, 0, 1, 1);
 
         JTextField baseCurrencyInput = new JTextField("0"); // Input for the amount in the base currency
@@ -56,7 +61,8 @@ public class ConverterView extends JFrame {
         switchCurrencyButton.setFocusable(false);
         addObject(switchCurrencyButton, this.getContentPane(), layout, gbc, 1, 1, 1, 1);
 
-        JLabel targetCurrency = new JLabel("USD"); // Label for the target currency
+        JComboBox targetCurrency = new JComboBox(ConverterModel.loadCurrencies()); // ComboBox for the target currency
+        targetCurrency.setRenderer(new CurrencyRenderer()); // Alters the appereance of the ComboBox
         addObject(targetCurrency, this.getContentPane(), layout, gbc, 0, 2, 1, 1);
 
         JTextField targetCurrencyOutput = new JTextField("0"); // Output of the converted amount in the target currency
@@ -64,9 +70,12 @@ public class ConverterView extends JFrame {
         addObject(targetCurrencyOutput, this.getContentPane(), layout, gbc, 1, 2, 1, 1);
 
         // Listeners
-        switchCurrencyButton.addActionListener(new SwitchCurrencyButtonListener(baseCurrency, targetCurrency, exchangeRate, baseCurrencyInput)); // Switches between the base- and target-currency
-        baseCurrencyInput.addKeyListener(new BaseCurrencyInputListener(baseCurrency, targetCurrency, baseCurrencyInput, targetCurrencyOutput)); // Converts the amount whilst typing
-        this.addWindowListener(new ConverterViewListener(baseCurrency, targetCurrency, exchangeRate)); // Displays the current exchange rate
+        // Switches between the base- and target-currency
+        switchCurrencyButton.addActionListener(new SwitchCurrencyButtonListener(baseCurrency, targetCurrency, baseCurrencyInput));
+        // Converts the amount whilst typing
+        baseCurrencyInput.addKeyListener(new BaseCurrencyInputListener(baseCurrency, targetCurrency, baseCurrencyInput, targetCurrencyOutput));
+        // Updates the exchange-rate and the conversion between the base- and the target-currency
+        Toolkit.getDefaultToolkit().addAWTEventListener(new GlobalMouseListener(baseCurrency, targetCurrency, baseCurrencyInput, targetCurrencyOutput, exchangeRate), AWTEvent.MOUSE_EVENT_MASK | AWTEvent.MOUSE_MOTION_EVENT_MASK);
 
         this.setVisible(true);
     }
