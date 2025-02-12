@@ -11,6 +11,9 @@ import java.net.URI;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.Properties;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
 import org.json.JSONObject;
 
 /**
@@ -105,6 +108,47 @@ public class ConverterModel {
         } catch (Exception ex) {
             System.out.println("Error! - The properties couldn't be loaded\n" + ex.getMessage());
             return null;
+        }
+    }
+
+    /**
+     * Updates the current exchange rate
+     *
+     * @param exchangeRateLabel Defines the label of the exchange rate
+     * @param bCurrency Defines the base currency
+     * @param tCurrency Defines the target currency
+     */
+    public static void updateExchangeRateLabel(JLabel exchangeRateLabel, JComboBox bCurrency, JComboBox tCurrency) {
+        // Extracts the currency-code of the value pair
+        String baseCurrency = ((String) bCurrency.getSelectedItem()).split(";")[0];
+        String targetCurrency = ((String) tCurrency.getSelectedItem()).split(";")[0];
+
+        Double exchangeRate = getLatestExchangeRate(baseCurrency, targetCurrency);
+        exchangeRateLabel.setText("1 " + baseCurrency + " = " + String.format("%.5f", exchangeRate) + " " + targetCurrency); // Replaces the placeholder with the current exchange rate
+    }
+
+    /**
+     * Updates the format of all currency labels
+     *
+     * @param baseCurrencyInput Defines the input of the base currency
+     * @param targetCurrencyOutput Defines the output of the target currency
+     * @param bCurrency Defines the base currency
+     * @param tCurrency Defines the target currency
+     */
+    public static void formatCurrencyLabels(JTextField baseCurrencyInput, JTextField targetCurrencyOutput, JComboBox bCurrency, JComboBox tCurrency) {
+        // Extracts the currency-code of the value pair
+        String baseCurrency = ((String) bCurrency.getSelectedItem()).split(";")[0];
+        String targetCurrency = ((String) tCurrency.getSelectedItem()).split(";")[0];
+
+        try {
+            double targetAmount = ConverterModel.convertCurrencies(baseCurrency, targetCurrency, Double.parseDouble(baseCurrencyInput.getText())); // Converts the currencies
+            if (baseCurrencyInput.getText().startsWith("0") && baseCurrencyInput.getText().length() > 1) {
+                baseCurrencyInput.setText(baseCurrencyInput.getText().replaceFirst("0", "")); // Removes the leading 0 of the entered amount
+            }
+            targetCurrencyOutput.setText(String.format("%.5f", targetAmount)); // Prevents the scientifc annotation of doubles
+        } catch (NumberFormatException ex) { // If the input-value is 'null' or not a number the in- and output gets reset.
+            baseCurrencyInput.setText("0");
+            targetCurrencyOutput.setText("0");
         }
     }
 }

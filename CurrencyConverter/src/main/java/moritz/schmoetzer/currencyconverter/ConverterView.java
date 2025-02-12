@@ -4,20 +4,19 @@
  */
 package moritz.schmoetzer.currencyconverter;
 
-import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import moritz.schmoetzer.currencyconverter.listeners.BaseCurrencyInputListener;
-import moritz.schmoetzer.currencyconverter.listeners.GlobalMouseListener;
+import moritz.schmoetzer.currencyconverter.listeners.ConverterViewListener;
+import moritz.schmoetzer.currencyconverter.listeners.CurrencySelectorListener;
 import moritz.schmoetzer.currencyconverter.listeners.SwitchCurrencyButtonListener;
 import moritz.schmoetzer.currencyconverter.renderers.CurrencyRenderer;
 
@@ -71,11 +70,17 @@ public class ConverterView extends JFrame {
 
         // Listeners
         // Switches between the base- and target-currency
-        switchCurrencyButton.addActionListener(new SwitchCurrencyButtonListener(baseCurrency, targetCurrency, baseCurrencyInput));
+        switchCurrencyButton.addActionListener(new SwitchCurrencyButtonListener(baseCurrency, targetCurrency, baseCurrencyInput, targetCurrencyOutput, exchangeRate));
+
         // Converts the amount whilst typing
         baseCurrencyInput.addKeyListener(new BaseCurrencyInputListener(baseCurrency, targetCurrency, baseCurrencyInput, targetCurrencyOutput));
-        // Updates the exchange-rate and the conversion between the base- and the target-currency
-        Toolkit.getDefaultToolkit().addAWTEventListener(new GlobalMouseListener(baseCurrency, targetCurrency, baseCurrencyInput, targetCurrencyOutput, exchangeRate), AWTEvent.MOUSE_EVENT_MASK | AWTEvent.MOUSE_MOTION_EVENT_MASK);
+
+        // Updates the exchange rate and the converted amount when selecting currencies
+        baseCurrency.addActionListener(new CurrencySelectorListener(baseCurrency, targetCurrency, baseCurrencyInput, targetCurrencyOutput, exchangeRate));
+        targetCurrency.addActionListener(new CurrencySelectorListener(baseCurrency, targetCurrency, baseCurrencyInput, targetCurrencyOutput, exchangeRate));
+
+        // Updates the exchange rate on startup
+        this.addWindowListener(new ConverterViewListener(baseCurrency, targetCurrency, exchangeRate));
 
         this.setVisible(true);
     }

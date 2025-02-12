@@ -4,9 +4,10 @@
  */
 package moritz.schmoetzer.currencyconverter.listeners;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 import moritz.schmoetzer.currencyconverter.ConverterModel;
 
@@ -14,31 +15,28 @@ import moritz.schmoetzer.currencyconverter.ConverterModel;
  *
  * @author Moritz Schmötzer
  */
-public class BaseCurrencyInputListener implements KeyListener {
+public class CurrencySelectorListener implements ActionListener {
 
     JComboBox baseCurrency;
     JComboBox targetCurrency;
     JTextField baseCurrencyInput;
     JTextField targetCurrencyOutput;
+    JLabel exchangeRateLabel;
 
-    public BaseCurrencyInputListener(JComboBox baseCurrency, JComboBox targetCurrency, JTextField baseCurrencyInput, JTextField targetCurrencyOutput) {
+    public CurrencySelectorListener(JComboBox baseCurrency, JComboBox targetCurrency, JTextField baseCurrencyInput, JTextField targetCurrencyOutput, JLabel exchangeRateLabel) {
         this.baseCurrency = baseCurrency;
         this.targetCurrency = targetCurrency;
         this.baseCurrencyInput = baseCurrencyInput;
         this.targetCurrencyOutput = targetCurrencyOutput;
+        this.exchangeRateLabel = exchangeRateLabel;
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
+    public void actionPerformed(ActionEvent e) {
         // Updates the conversion from the base- to the target-currency
         ConverterModel.formatCurrencyLabels(baseCurrencyInput, targetCurrencyOutput, baseCurrency, targetCurrency);
+
+        // Updates the current exchange rate
+        ConverterModel.updateExchangeRateLabel(exchangeRateLabel, baseCurrency, targetCurrency);
     }
 }

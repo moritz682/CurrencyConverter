@@ -6,10 +6,10 @@ package moritz.schmoetzer.currencyconverter.listeners;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import static java.awt.event.KeyEvent.CHAR_UNDEFINED;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
+import moritz.schmoetzer.currencyconverter.ConverterModel;
 
 /**
  *
@@ -20,11 +20,15 @@ public class SwitchCurrencyButtonListener implements ActionListener {
     JComboBox baseCurrency;
     JComboBox targetCurrency;
     JTextField baseCurrencyInput;
+    JTextField targetCurrencyOutput;
+    JLabel exchangeRateLabel;
 
-    public SwitchCurrencyButtonListener(JComboBox baseCurrency, JComboBox targetCurrency, JTextField baseCurrencyInput) {
+    public SwitchCurrencyButtonListener(JComboBox baseCurrency, JComboBox targetCurrency, JTextField baseCurrencyInput, JTextField targetCurrencyOutput, JLabel exchangeRateLabel) {
         this.baseCurrency = baseCurrency;
         this.targetCurrency = targetCurrency;
         this.baseCurrencyInput = baseCurrencyInput;
+        this.targetCurrencyOutput = targetCurrencyOutput;
+        this.exchangeRateLabel = exchangeRateLabel;
     }
 
     @Override
@@ -35,6 +39,9 @@ public class SwitchCurrencyButtonListener implements ActionListener {
         targetCurrency.setSelectedItem(tempBaseCurrency);
 
         // Updates the conversion from the base- to the target-currency
-        baseCurrencyInput.getKeyListeners()[0].keyReleased(new KeyEvent(baseCurrency, CHAR_UNDEFINED, CHAR_UNDEFINED, CHAR_UNDEFINED, CHAR_UNDEFINED, CHAR_UNDEFINED));
+        ConverterModel.formatCurrencyLabels(baseCurrencyInput, targetCurrencyOutput, baseCurrency, targetCurrency);
+
+        // Updates the current exchange rate
+        ConverterModel.updateExchangeRateLabel(exchangeRateLabel, baseCurrency, targetCurrency);
     }
 }
