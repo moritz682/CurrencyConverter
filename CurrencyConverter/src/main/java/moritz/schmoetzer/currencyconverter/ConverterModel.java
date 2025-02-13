@@ -4,13 +4,16 @@
  */
 package moritz.schmoetzer.currencyconverter;
 
+import java.awt.Image;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Properties;
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -22,10 +25,14 @@ import org.json.JSONObject;
  */
 public class ConverterModel {
 
-    private static JSONObject currencies;
+    private static JSONObject exchangeRate; // Consists the exchange rate from a base currency to all other currencies
+    private static String[] currencies; // Consists the currencies and their corresponding codes
+    private static HashMap<String, ImageIcon> countries; // Consists the pictures of the corresponding currency
 
     public ConverterModel() {
+        exchangeRate = null;
         currencies = null;
+        countries = null;
     }
 
     /**
@@ -69,11 +76,11 @@ public class ConverterModel {
         targetCurrency = targetCurrency.toLowerCase();
         JSONObject response;
 
-        if (currencies == null || !currencies.has(baseCurrency) || currencies.get("date") != LocalDate.now().toString()) {
-            response = requestAPI(baseCurrency); // Requesting the latest exchange rate between to currencies
-            currencies = response;
+        if (exchangeRate == null || !exchangeRate.has(baseCurrency) || exchangeRate.get("date") != LocalDate.now().toString()) {
+            response = requestAPI(baseCurrency); // Requesting the latest exchange rate between to exchangeRate
+            exchangeRate = response;
         } else {
-            response = currencies; // If the currencies didn't change the same JSONObject is getting used
+            response = exchangeRate; // If the exchange rate didn't change the same JSONObject is getting used
         }
 
         return response.getJSONObject(baseCurrency).getDouble(targetCurrency);
@@ -100,14 +107,49 @@ public class ConverterModel {
      * @return Properties with the currencies
      */
     public static String[] loadCurrencies() {
-        try {
-            InputStream input = ConverterView.class.getClassLoader().getResourceAsStream("currency_codes.properties"); // Defines the path of the properties-file
-            Properties prop = new Properties();
-            prop.load(input);
-            return prop.getProperty("currency.codes").split(", ");
-        } catch (Exception ex) {
-            System.out.println("Error! - The properties couldn't be loaded\n" + ex.getMessage());
-            return null;
+        if (currencies == null) { // Loads the currencies at startup from the disk
+            try {
+                InputStream input = ConverterView.class.getClassLoader().getResourceAsStream("properties/currency_codes.properties"); // Defines the path of the properties-file
+                Properties prop = new Properties();
+                prop.load(input);
+                currencies = prop.getProperty("currency.codes").split(", ");
+                return currencies;
+            } catch (Exception ex) {
+                System.out.println("Error! - The properties couldn't be loaded\n" + ex.getMessage());
+                return null;
+            }
+        } else {
+            return currencies;
+        }
+    }
+
+    /**
+     * Loads the images of the country flags form the disk
+     *
+     * @return HashMap with country flag images
+     */
+    public static HashMap<String, ImageIcon> loadCountries() {
+        if (countries == null) { // Loads the country flags from the disk
+            countries = new HashMap<>();
+            if (currencies == null) {
+                loadCurrencies(); // The loading of the pictures depends on their abbreviations stored in the properties-file
+            }
+            try {
+                for (String country : currencies) {
+                    String countryAbbr = country.split(";")[2]; // Consists the abbreviation of the country
+
+                    ImageIcon icon = new ImageIcon(ConverterView.class.getClassLoader().getResource("pictures/" + countryAbbr + ".png")); // Load the image from the disk
+                    Image image = icon.getImage().getScaledInstance(180, 120, java.awt.Image.SCALE_FAST); // Aspect ratio of most flags is 3:2
+
+                    countries.put(countryAbbr, new ImageIcon(image));
+                }
+                return countries;
+            } catch (Exception e) {
+                System.out.println("Error! - The image couldn't be loaded\n" + e.getMessage());
+                return null;
+            }
+        } else {
+            return countries;
         }
     }
 

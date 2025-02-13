@@ -1,7 +1,5 @@
 package moritz.schmoetzer.currencyconverter;
 
-import javax.swing.JFrame;
-
 /**
  *
  * @author Moritz Schmötzer
@@ -9,6 +7,6 @@ import javax.swing.JFrame;
 public class Main {
 
     public static void main(String[] args) {
-        JFrame view = new ConverterView();
+        new ConverterView().setVisible(true);
     }
 }

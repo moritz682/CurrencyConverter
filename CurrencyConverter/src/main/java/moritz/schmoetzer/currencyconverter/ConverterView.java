@@ -30,6 +30,13 @@ public class ConverterView extends JFrame {
      * Represents the GUI of the currency converter
      */
     public ConverterView() {
+        buildView();
+    }
+
+    /**
+     * Builds the view of the currency converter
+     */
+    private void buildView() {
         this.setTitle("CurrencyConverter");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(700, 500);
@@ -81,8 +88,6 @@ public class ConverterView extends JFrame {
 
         // Updates the exchange rate on startup
         this.addWindowListener(new ConverterViewListener(baseCurrency, targetCurrency, exchangeRate));
-
-        this.setVisible(true);
     }
 
     /**
