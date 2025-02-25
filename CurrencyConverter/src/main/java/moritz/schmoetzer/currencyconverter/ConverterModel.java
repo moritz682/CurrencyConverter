@@ -187,7 +187,11 @@ public class ConverterModel {
             if (baseCurrencyInput.getText().startsWith("0") && baseCurrencyInput.getText().length() > 1) {
                 baseCurrencyInput.setText(baseCurrencyInput.getText().replaceFirst("0", "")); // Removes the leading 0 of the entered amount
             }
-            targetCurrencyOutput.setText(String.format("%.5f", targetAmount)); // Prevents the scientifc annotation of doubles
+            if (targetAmount % 1 != 0) { // Check if the target amount has decimal points
+                targetCurrencyOutput.setText(String.format("%.4f", targetAmount)); // Prevents the scientifc annotation of doubles
+            } else {
+                targetCurrencyOutput.setText(String.format("%.0f", targetAmount)); // Removes the trailing 0 of the target amount
+            }
         } catch (NumberFormatException ex) { // If the input-value is 'null' or not a number the in- and output gets reset.
             baseCurrencyInput.setText("0");
             targetCurrencyOutput.setText("0");
