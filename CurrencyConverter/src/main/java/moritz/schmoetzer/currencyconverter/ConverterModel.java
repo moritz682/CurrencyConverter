@@ -4,7 +4,11 @@
  */
 package moritz.schmoetzer.currencyconverter;
 
-import java.awt.Image;
+import org.json.JSONObject;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,11 +17,6 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Properties;
-import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import org.json.JSONObject;
 
 /**
  *
@@ -109,7 +108,7 @@ public class ConverterModel {
     public static String[] loadCurrencies() {
         if (currencies == null) { // Loads the currencies at startup from the disk
             try {
-                InputStream input = ConverterView.class.getClassLoader().getResourceAsStream("properties/currency_codes.properties"); // Defines the path of the properties-file
+                InputStream input = ConverterModel.class.getClassLoader().getResourceAsStream("properties/currency_codes.properties"); // Defines the path of the properties-file
                 Properties prop = new Properties();
                 prop.load(input);
                 currencies = prop.getProperty("currency.codes").split(", ");
@@ -138,7 +137,8 @@ public class ConverterModel {
                 for (String country : currencies) {
                     String countryAbbr = country.split(";")[2]; // Consists the abbreviation of the country
 
-                    ImageIcon icon = new ImageIcon(ConverterView.class.getClassLoader().getResource("pictures/" + countryAbbr + ".png")); // Load the image from the disk
+                    InputStream input = ConverterModel.class.getClassLoader().getResourceAsStream("pictures/" + countryAbbr + ".png"); // Load the image from the disk
+                    ImageIcon icon = new ImageIcon(ImageIO.read(input));
                     Image image = icon.getImage().getScaledInstance(180, 120, java.awt.Image.SCALE_FAST); // Aspect ratio of most flags is 3:2
 
                     countries.put(countryAbbr, new ImageIcon(image));
