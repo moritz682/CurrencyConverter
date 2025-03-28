@@ -4,11 +4,11 @@
  */
 package moritz.schmoetzer.currencyconverter.listeners;
 
+import moritz.schmoetzer.currencyconverter.ConverterModel;
+
+import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import javax.swing.JComboBox;
-import javax.swing.JTextField;
-import moritz.schmoetzer.currencyconverter.ConverterModel;
 
 /**
  *
